@@ -1,9 +1,3 @@
----
-services: batch
-platforms: python
-author: msonecode
----
-
 # Create Azure Batch PaaS Cloud Service by Python
 
 ## Introduction
