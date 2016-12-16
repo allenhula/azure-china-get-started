@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>a26febe9-ee8a-4a7d-bfc2-88235b20e4c5</ProjectGuid>
+    <ProjectHome>
+    </ProjectHome>
+    <StartupFile>article_samples\python_tutorial_client.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>BatchPythonWithCSConfig</Name>
+    <RootNamespace>BatchSamples</RootNamespace>
+    <InterpreterId>
+    </InterpreterId>
+    <InterpreterVersion>
+    </InterpreterVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="article_samples\python_tutorial_client.py" />
+    <Compile Include="article_samples\python_tutorial_task.py" />
+    <Compile Include="article_samples\mpi\linux_mpi_task_demo.py" />
+    <Compile Include="article_samples\mpi\multi_task_helpers.py" />
+    <Compile Include="article_samples\mpi\azure_storage_helper.py" />
+    <Compile Include="article_samples\mpi\__init__.py" />
+    <Content Include="article_samples\data\taskdata1.txt" />
+    <Content Include="article_samples\data\taskdata2.txt" />
+    <Content Include="article_samples\data\taskdata3.txt" />
+    <Content Include="article_samples\InstallPython35.ps1">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="article_samples\InstallPython35China.ps1" />
+    <Content Include="article_samples\InstallPython35Global.ps1" />
+    <Content Include="article_samples\mpi\data\linux\openfoam\nodeprep-cmd" />
+    <Content Include="article_samples\mpi\data\linux\openfoam\coordination-cmd" />
+    <Content Include="article_samples\mpi\data\linux\openfoam\application-cmd" />
+    <Folder Include="article_samples\" />
+    <Folder Include="article_samples\data\" />
+    <Folder Include="article_samples\mpi" />
+    <Folder Include="article_samples\mpi\data" />
+    <Folder Include="article_samples\mpi\data\linux" />
+    <Folder Include="article_samples\mpi\data\linux\openfoam" />
+    <Folder Include="common\" />
+    <Compile Include="common\helpers.py" />
+    <Compile Include="common\__init__.py" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
+  <Import Condition="!Exists($(PtvsTargetsFile))" Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>
