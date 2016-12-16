@@ -1,4 +1,4 @@
-# azure-get-started
+# Key Vault Sample
 Get-started sample code for Key Vault.
 
 Two samples are included, one is using available .NET SDK, another is using JAVA to invoke REST API as JAVA SDK is not ready yet.
