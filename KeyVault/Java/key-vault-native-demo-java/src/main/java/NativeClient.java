@@ -27,11 +27,11 @@ public class NativeClient {
 
     public static void main(String args[]) throws Exception {
     	// TODO: update to match your environment
-    	String tenantId = "954ddad8-66d7-47a8-8f9f-1316152d9587";
-        String clientId = "4afc315c-7a1a-4e0c-9d45-e7764c17446a";
-        String clientKey = "!!123abc";
+    	String tenantId = "";
+        String clientId = "";
+        String clientKey = "";
         // Format: https://{keyvault-name}.vault.azure.net/{object-type}/{object-name}/{object-version}
-        String restApiUrl = "https://allenlkv01.vault.azure.cn/secrets/stConnectionString/0c35774bac2949199b8ffcff1dbdd500";
+        String restApiUrl = "";
         
         String stContainerName = "kvdemocontainer4java";
         
