@@ -1,5 +1,3 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,7 +9,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -21,16 +18,22 @@ import org.json.JSONObject;
 import com.microsoft.aad.adal4j.AuthenticationContext;
 import com.microsoft.aad.adal4j.AuthenticationResult;
 import com.microsoft.aad.adal4j.ClientCredential;
+import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.blob.CloudBlobClient;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
 
 public class NativeClient {
     private final static String RESOURCE = "https://vault.azure.cn";
 
     public static void main(String args[]) throws Exception {
     	// TODO: update to match your environment
-    	String tenantId = "";
-        String clientId = "";
-        String clientKey = "";
-        String restApiUrl = "";
+    	String tenantId = "954ddad8-66d7-47a8-8f9f-1316152d9587";
+        String clientId = "4afc315c-7a1a-4e0c-9d45-e7764c17446a";
+        String clientKey = "!!123abc";
+        // Format: https://{keyvault-name}.vault.azure.net/{object-type}/{object-name}/{object-version}
+        String restApiUrl = "https://allenlkv01.vault.azure.cn/secrets/stConnectionString/0c35774bac2949199b8ffcff1dbdd500";
+        
+        String stContainerName = "kvdemocontainer4java";
         
         AuthenticationResult authResult = getAccessTokenFromClientCredentials(tenantId, clientId, clientKey);
         String accessToken = authResult.getAccessToken();
@@ -38,6 +41,28 @@ public class NativeClient {
         
         String connectionString = GetSecretFromKeyVault(restApiUrl, accessToken);
         System.out.println("Connection String retrieved from Key Vault - " + connectionString);
+        
+        try
+        {
+            // Retrieve storage account from connection-string.
+            CloudStorageAccount storageAccount = CloudStorageAccount.parse(connectionString);
+            // Create the blob client.
+            CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+            // Get a reference to a container.
+            // The container name must be lower case
+            CloudBlobContainer container = blobClient.getContainerReference(stContainerName);
+            // Create the container if it does not exist.
+            container.createIfNotExists();
+            
+            System.out.println("Create storage container named " + stContainerName);
+        }
+        catch (Exception e)
+        {
+            // Output the stack trace.
+        	System.out.println("Create storage container failed!");
+            e.printStackTrace();
+        }
+
     }
     
     private static AuthenticationResult getAccessTokenFromClientCredentials(
