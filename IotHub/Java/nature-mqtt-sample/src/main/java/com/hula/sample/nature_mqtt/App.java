@@ -22,9 +22,9 @@ import com.microsoft.azure.iothub.auth.Signature;
 public class App {
 	public static void main(String[] args) throws MqttException, IOException, InterruptedException {
 		int maxInFlight = 100;
-		String hostName = "allenlfreeiothub.azure-devices.cn"; // e.g. iothubdemo.azure-devices.cn
-		String deviceId = "hualFirstDevice";
-		String deviceKey = "UePbdw0WIVEVwQHHNP+TeHJK98TT9K7y3Jw/hVZAZuM=";
+		String hostName = ""; // e.g. iothubdemo.azure-devices.cn
+		String deviceId = "";
+		String deviceKey = "";
 				
 		String serverURI = "ssl://" + hostName + ":8883";
 		String topic = "devices/" + deviceId + "/messages/events/";
