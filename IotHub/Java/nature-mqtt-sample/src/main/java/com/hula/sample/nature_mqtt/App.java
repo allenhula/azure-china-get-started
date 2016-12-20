@@ -22,12 +22,16 @@ import com.microsoft.azure.iothub.auth.Signature;
 public class App {
 	public static void main(String[] args) throws MqttException, IOException, InterruptedException {
 		int maxInFlight = 100;
-		String hostName = "{iothubname}"; // e.g. iothubdemo.azure-devices.cn
-		String deviceId = "";
-		String deviceKey = "";
-		
+		String hostName = "allenlfreeiothub.azure-devices.cn"; // e.g. iothubdemo.azure-devices.cn
+		String deviceId = "hualFirstDevice";
+		String deviceKey = "UePbdw0WIVEVwQHHNP+TeHJK98TT9K7y3Jw/hVZAZuM=";
+				
 		String serverURI = "ssl://" + hostName + ":8883";
 		String topic = "devices/" + deviceId + "/messages/events/";
+		
+		// demo for topic name with property_bag: devices/{device_id}/messages/events/{property_bag}
+		//String topicProperty = URLEncoder.encode("testp", "UTF-8") + "=" + URLEncoder.encode("testv", "UTF-8");
+		//String topicWithProperty = "devices/" + deviceId + "/messages/events/" + topicProperty;
 
 		MqttAsyncClient client = new MqttAsyncClient(serverURI, deviceId, new MemoryPersistence());
 		MqttConnectOptions connOpts = new MqttConnectOptions();
@@ -48,6 +52,9 @@ public class App {
 				MqttMessage message = new MqttMessage(msgStr.getBytes());
 				message.setQos(1);
 				IMqttDeliveryToken delToken = client.publish(topic, message);
+				// demo for topic name with property_bag
+				// in this way, all events will contains the property
+				//IMqttDeliveryToken delToken = client.publish(topicWithProperty, message);
 				delToken.waitForCompletion();
 				System.out.println("sent message " + i);
 			}
