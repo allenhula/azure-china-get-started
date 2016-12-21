@@ -1,10 +1,6 @@
----
-services: hdinsight
-platforms: java
-author: blackmist
----
+mooncake version of this sample https://github.com/Azure-Samples/hdinsight-java-storm-eventhub/tree/Storm_v0.9.3
 
-# hdinsight-java-storm-eventhub
+# hdinsight-java-storm-eventhub-mooncake
 
 An example of how to read and write from Azure Event Hub using an Apache Storm topology (written in Java,) on an Azure HDInsight cluster. This example uses the Event Hubs spout provided by Microsoft, which is required for Storm 0.9.3 (HDInsight version 3.2.)
 
