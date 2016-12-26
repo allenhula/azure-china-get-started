@@ -13,6 +13,7 @@ namespace SenderWithSas
 {
     class Program
     {
+        static string rootConnectionString = ""; // used for revoke\restore publisher permission
         static string namespaceName = "";
         static string eventHubName = "";
         static string publisherName = "";
@@ -21,7 +22,6 @@ namespace SenderWithSas
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Press Ctrl-C to stop the sender process");
             Console.WriteLine("Press Enter to start now");
             Console.ReadLine();
 
@@ -49,7 +49,20 @@ namespace SenderWithSas
             // publisher speicifc sas. created from library
             //var httpGeneratedSas4Publisher = GetSasPerPublisher(httpEndpoint, keyName, keyValue, publisherName);
 
-            SendMessagesWithSasViaHttp(httpEndpoint, eventHubName, publisherName, httpSas4Publisher);
+            //SendMessagesWithSasViaHttp(httpEndpoint, eventHubName, publisherName, httpSas4Publisher);
+
+            // demo for revoke and restore publisher policy
+            var nsMgr = NamespaceManager.CreateFromConnectionString(rootConnectionString);
+            Console.WriteLine("Revoke the publisher {0}, now send should fail", publisherName);
+            nsMgr.RevokePublisher(eventHubName, publisherName);
+            SendMessagesWithSas(endpoint, eventHubName, publisherName, sas4Publisher);
+
+            Console.WriteLine("Restore the publisher {0}, now send should success", publisherName);
+            nsMgr.RestorePublisher(eventHubName, publisherName);
+            SendMessagesWithSas(endpoint, eventHubName, publisherName, sas4Publisher);
+
+            Console.WriteLine("Press Enter to exit!");
+            Console.ReadLine();
         }
 
         static void SendMessagesWithSas(string endpoint, string eventHubName, string publisherName, string sas)
@@ -60,10 +73,15 @@ namespace SenderWithSas
             var message = Guid.NewGuid().ToString();
             Console.WriteLine("{0} > Sending message with SAS connection string : {1} from publisher {2}", DateTime.Now, message, publisherName);
             var eventData = new EventData(Encoding.UTF8.GetBytes(message));
+            // bug here: partition key must match publisher name, otherwise error should report. but no error happens.
+            //eventData.PartitionKey = "somethingelse";
 
             try
             {
                 sender.Send(eventData);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("{0} > Sent message {1} succesfully!", DateTime.Now, message);
+                Console.ResetColor();
             }
             catch (Exception exception)
             {
@@ -96,11 +114,14 @@ namespace SenderWithSas
                     var message = Guid.NewGuid().ToString();
                     Console.WriteLine("{0} > Sending message with SAS via message factory: {1} from publisher {2}", DateTime.Now, message, publisherName);
                     var eventData = new EventData(Encoding.UTF8.GetBytes(message));
-                    // bug here: 
-                    eventData.PartitionKey = "device" + i;
+                    // bug here: partition key must match publisher name, otherwise error should report. but no error happens.
+                    //eventData.PartitionKey = "device" + i;
                     sender.Send(eventData);
                     //publisherClient.Send(eventData);
                     //client.Send(eventData);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("{0} > Sent message {1} succesfully!", DateTime.Now, message);
+                    Console.ResetColor();
                 }
                 catch (Exception exception)
                 {
@@ -129,6 +150,9 @@ namespace SenderWithSas
                 var postResult = httpClient.PostAsJsonAsync(requestUriString, eventData).Result;
                 Console.WriteLine("{0} > Response status: {1}", DateTime.Now, postResult.StatusCode.ToString());
                 //Console.WriteLine("{0} > Response content: {1}", DateTime.Now, postResult.Content.ReadAsStringAsync().Result);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("{0} > Sent message {1} succesfully!", DateTime.Now, message);
+                Console.ResetColor();
             }
             catch (Exception exception)
             {
