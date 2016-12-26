@@ -54,6 +54,27 @@ namespace SenderWithSas
 
         static void SendMessagesWithSas(string endpoint, string eventHubName, string publisherName, string sas)
         {
+            var sasConnectionString = ServiceBusConnectionStringBuilder.CreateUsingSharedAccessSignature(new Uri(endpoint), eventHubName, publisherName, sas);
+            var sender = EventHubSender.CreateFromConnectionString(sasConnectionString);
+
+            var message = Guid.NewGuid().ToString();
+            Console.WriteLine("{0} > Sending message with SAS connection string : {1} from publisher {2}", DateTime.Now, message, publisherName);
+            var eventData = new EventData(Encoding.UTF8.GetBytes(message));
+
+            try
+            {
+                sender.Send(eventData);
+            }
+            catch (Exception exception)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("{0} > Exception: {1}", DateTime.Now, exception.Message);
+                Console.ResetColor();
+            }
+        }
+
+        static void SendMessagesWithSasViaMsgFactory(string endpoint, string eventHubName, string publisherName, string sas)
+        {
             var msgFactory = MessagingFactory.Create(new Uri(endpoint), new MessagingFactorySettings()
             {
                 TokenProvider = TokenProvider.CreateSharedAccessSignatureTokenProvider(sas),
@@ -73,7 +94,7 @@ namespace SenderWithSas
                 try
                 {
                     var message = Guid.NewGuid().ToString();
-                    Console.WriteLine("{0} > Sending message with SAS : {1}", DateTime.Now, message);
+                    Console.WriteLine("{0} > Sending message with SAS via message factory: {1} from publisher {2}", DateTime.Now, message, publisherName);
                     var eventData = new EventData(Encoding.UTF8.GetBytes(message));
                     // bug here: 
                     eventData.PartitionKey = "device" + i;
@@ -95,7 +116,7 @@ namespace SenderWithSas
         static void SendMessagesWithSasViaHttp(string endpoint, string eventHubName, string publisherName, string sas)
         {
             var message = Guid.NewGuid().ToString();
-            Console.WriteLine("{0} > Sending message with SAS via HTTPS : {1}", DateTime.Now, message);
+            Console.WriteLine("{0} > Sending message with SAS via HTTPS : {1} from publisher {2}", DateTime.Now, message, publisherName);
             var eventData = new EventData(Encoding.UTF8.GetBytes(message));
 
             var httpClient = new HttpClient();
@@ -125,7 +146,7 @@ namespace SenderWithSas
                 publisherName,
                 keyName,
                 keyValue,
-                TimeSpan.FromDays(7)
+                TimeSpan.FromTicks(DateTime.UtcNow.AddDays(7).Ticks)
                 );
         }
 
