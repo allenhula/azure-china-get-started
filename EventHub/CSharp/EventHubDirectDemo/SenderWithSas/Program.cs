@@ -125,7 +125,7 @@ namespace SenderWithSas
                 publisherName,
                 keyName,
                 keyValue,
-                TimeSpan.FromTicks(DateTime.UtcNow.AddDays(7).Ticks)
+                TimeSpan.FromDays(7)
                 );
         }
 
