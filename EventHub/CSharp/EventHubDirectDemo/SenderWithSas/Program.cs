@@ -29,7 +29,7 @@ namespace SenderWithSas
             var resourceUri = string.Format("{0}{1}", endpoint, eventHubName);
             var resourceUri4Publisher = string.Format("{0}{1}/publishers/{2}", endpoint, eventHubName, publisherName);
 
-            // common sas
+            // common sb sas
             //var sas = createToken(resourceUri, keyName, keyValue);
             // publisher specific sas. created in native way
             var sas4Publisher = createToken(resourceUri4Publisher, keyName, keyValue);
@@ -42,14 +42,16 @@ namespace SenderWithSas
             var httpResourceUri = string.Format("{0}{1}", httpEndpoint, eventHubName);
             var httpResourceUri4Publisher = string.Format("{0}{1}/publishers/{2}", httpEndpoint, eventHubName, publisherName);
 
-            // common sas
+            #region using https protocol to invoke REST Api
+            // common http sas
             //var httpSas = createToken(httpResourceUri, keyName, keyValue);
             // publisher specific sas. created in native way
-            var httpSas4Publisher = createToken(httpResourceUri4Publisher, keyName, keyValue);
+            //var httpSas4Publisher = createToken(httpResourceUri4Publisher, keyName, keyValue);
             // publisher speicifc sas. created from library
             //var httpGeneratedSas4Publisher = GetSasPerPublisher(httpEndpoint, keyName, keyValue, publisherName);
 
-            //SendMessagesWithSasViaHttp(httpEndpoint, eventHubName, publisherName, httpSas4Publisher);
+            //SendMessagesWithSasViaHttp(httpEndpoint, eventHubName, publisherName, httpSas4Publisher); 
+            #endregion
 
             // demo for revoke and restore publisher policy
             var nsMgr = NamespaceManager.CreateFromConnectionString(rootConnectionString);
@@ -73,8 +75,8 @@ namespace SenderWithSas
             var message = Guid.NewGuid().ToString();
             Console.WriteLine("{0} > Sending message with SAS connection string : {1} from publisher {2}", DateTime.Now, message, publisherName);
             var eventData = new EventData(Encoding.UTF8.GetBytes(message));
-            // bug here: partition key must match publisher name, otherwise error should report. but no error happens.
-            //eventData.PartitionKey = "somethingelse";
+            // Below partition key setting is not neccessary as it will be auto assigned with publishername in such scenario
+            //eventData.PartitionKey = publisherName;
 
             try
             {
@@ -114,8 +116,8 @@ namespace SenderWithSas
                     var message = Guid.NewGuid().ToString();
                     Console.WriteLine("{0} > Sending message with SAS via message factory: {1} from publisher {2}", DateTime.Now, message, publisherName);
                     var eventData = new EventData(Encoding.UTF8.GetBytes(message));
-                    // bug here: partition key must match publisher name, otherwise error should report. but no error happens.
-                    //eventData.PartitionKey = "device" + i;
+                    // Below partition key setting is not neccessary as it will be auto assigned with publishername in such scenario
+                    //eventData.PartitionKey = publisherName;
                     sender.Send(eventData);
                     //publisherClient.Send(eventData);
                     //client.Send(eventData);
