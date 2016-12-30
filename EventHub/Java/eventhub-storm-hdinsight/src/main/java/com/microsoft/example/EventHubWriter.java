@@ -34,7 +34,7 @@ public class EventHubWriter {
     String namespaceName = properties.getProperty("eventhubs.namespace");
     String entityPath = properties.getProperty("eventhubs.entitypath");
 
-    EventHubBoltConfig spoutConfig = new EventHubBoltConfig(policyName, policyKey,
+    EventHubBoltConfig boltConfig = new EventHubBoltConfig(policyName, policyKey,
       namespaceName, "servicebus.chinacloudapi.cn", entityPath);
 
     //Used to build the topology
@@ -43,7 +43,7 @@ public class EventHubWriter {
     //and parallelism hint of 5 executors
     builder.setSpout("spout", new DeviceSpout(), 5);
 
-    builder.setBolt("eventhubbolt", new EventHubBolt(spoutConfig), 8).shuffleGrouping("spout");
+    builder.setBolt("eventhubbolt", new EventHubBolt(boltConfig), 8).shuffleGrouping("spout");
 
     //new configuration
     Config conf = new Config();
