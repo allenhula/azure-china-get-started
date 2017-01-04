@@ -1,4 +1,4 @@
-# Servce Bus via JMS Sample
+# JMS API with Azure China Service Bus and AMQP 1.0 Sample
 
 Sample queue-jms is based on SDK qpid-jms-client: 
 - Introduction: https://qpid.apache.org/components/jms/
