@@ -25,7 +25,7 @@ public class Receiver {
 		// NOTE: this is to workaround issue https://github.com/Azure/azure-event-hubs-java/issues/22
 		// Once the issue is fixed, it is better to use ConnectionStringBuilder to create the connection string
 		String endpoint = "sb://" + namespaceName + ".servicebus.chinacloudapi.cn/";
-		// Endpoint=<eventhub_compatible_endpoint>;SharedAccessKeyName=<iothub_sas_policy_name>;SharedAccessKey=<iothub_sas_policy_key>;EntityPath=<eventhub_compatible_name>
+		// Endpoint=<eventhub_endpoint>;SharedAccessKeyName=<sas_policy_name>;SharedAccessKey=<sas_policy_key>;EntityPath=<eventhub_name>
 		String connectionString = String.format("Endpoint=%s;SharedAccessKeyName=%s;SharedAccessKey=%s;EntityPath=%s",
 				endpoint, sasKeyName, sasKey, eventHubName);
 
