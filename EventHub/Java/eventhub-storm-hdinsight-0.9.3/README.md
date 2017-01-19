@@ -166,7 +166,7 @@ The jar created by this project contains two topologies; __com.microsoft.example
 
 2. Use the __Jar File__ dropdown to browse and select the EventHubExample-1.0-SNAPSHOT.jar file from your build environment.
 
-3. For __Class Name__, enter `com.mirosoft.example.EventHubWriter`.
+3. For __Class Name__, enter `com.microsoft.example.EventHubWriter`.
 
 4. For __Additional Parameters__, enter `writer`. Finally, click __Submit__ to upload the jar and start the EventHubWriter topology.
 
