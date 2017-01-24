@@ -22,7 +22,7 @@ public class App {
 		String hostName = "demohost";
 		
 		// For mooncake
-		URI endpointUri = URI.create("sb://" + namespaceName + ".servicebus.chinacloudapi.cn/");
+		URI endpointUri = URI.create("amqps://" + namespaceName + ".servicebus.chinacloudapi.cn/");
 		ConnectionStringBuilder connStrBuilder = new ConnectionStringBuilder(endpointUri, eventHubName, sasKeyName, sasKey);
 		String eventHubConnectionString = connStrBuilder.toString();
 
