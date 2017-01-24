@@ -20,14 +20,11 @@ public class App {
 		String storageConnectionString = "";
 		String storageContainerName = "";
 		String hostName = "demohost";
-
-		// NOTE: this is to workaround issue https://github.com/Azure/azure-event-hubs-java/issues/22
-		// Once the issue is fixed, it is better to use ConnectionStringBuilder to create the connection string
-		String endpoint = "sb://" + namespaceName + ".servicebus.chinacloudapi.cn/";
-		// Endpoint=<eventhub_endpoint>;SharedAccessKeyName=<sas_policy_name>;SharedAccessKey=<sas_policy_key>;EntityPath=<eventhub_name>
-		String eventHubConnectionString = String.format(
-				"Endpoint=%s;SharedAccessKeyName=%s;SharedAccessKey=%s;EntityPath=%s", endpoint, sasKeyName, sasKey,
-				eventHubName);
+		
+		// For mooncake
+		URI endpointUri = URI.create("sb://" + namespaceName + ".servicebus.chinacloudapi.cn/");
+		ConnectionStringBuilder connStrBuilder = new ConnectionStringBuilder(endpointUri, eventHubName, sasKeyName, sasKey);
+		String eventHubConnectionString = connStrBuilder.toString();
 
 		System.out.println("Creating Event Processor Host named " + hostName);
 		EventProcessorHost epHost = new EventProcessorHost(hostName, eventHubName,
