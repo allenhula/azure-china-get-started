@@ -22,14 +22,11 @@ public class Receiver {
 		String sasKeyName = "";
 		String sasKey = "";
 
-		// NOTE: this is to workaround issue https://github.com/Azure/azure-event-hubs-java/issues/22
-		// Once the issue is fixed, it is better to use ConnectionStringBuilder to create the connection string
-		String endpoint = "sb://" + namespaceName + ".servicebus.chinacloudapi.cn/";
-		// Endpoint=<eventhub_endpoint>;SharedAccessKeyName=<sas_policy_name>;SharedAccessKey=<sas_policy_key>;EntityPath=<eventhub_name>
-		String connectionString = String.format("Endpoint=%s;SharedAccessKeyName=%s;SharedAccessKey=%s;EntityPath=%s",
-				endpoint, sasKeyName, sasKey, eventHubName);
+		// For mooncake
+		URI endpointUri = URI.create("amqps://" + namespaceName + ".servicebus.chinacloudapi.cn/");
+		ConnectionStringBuilder connStrBuilder = new ConnectionStringBuilder(endpointUri, eventHubName, sasKeyName, sasKey);
 
-		EventHubClient client = EventHubClient.createFromConnectionString(connectionString).get();
+		EventHubClient client = EventHubClient.createFromConnectionString(connStrBuilder.toString()).get();
 
 		List<PartitionReceiver> receivers = new ArrayList<PartitionReceiver>();
 		for (int i = 0; i < 4; i++) {
