@@ -46,7 +46,7 @@ namespace SBRestApiDemo
             var receivedMsg = ReceiveMessageAsync(receiverSasToken).Result;
             if (receivedMsg != null)
             {
-                Console.WriteLine($"Received message: {Encoding.UTF8.GetString(receivedMsg.Body)} with id {receivedMsg.SystemProperties.MessageId}");
+                Console.WriteLine($"ReceiveAndDeleted message: {Encoding.UTF8.GetString(receivedMsg.Body)} with id {receivedMsg.SystemProperties.MessageId}");
             }
 
             // send message 2
@@ -67,8 +67,9 @@ namespace SBRestApiDemo
                 var msgId = receivedMsg2.SystemProperties.MessageId;
                 var lockToken = receivedMsg2.SystemProperties.LockToken;
                 var msgBody = Encoding.UTF8.GetString(receivedMsg2.Body);
-                Console.WriteLine($"Received message: {msgBody} with id {msgId} and lock token {lockToken}");
+                Console.WriteLine($"PeekAndLocked message: {msgBody} with id {msgId} and lock token {lockToken}");
                 DeleteMessageAsync(msgId, lockToken, receiverSasToken).Wait();
+                Console.WriteLine($"Completed message");
             }            
 
             Console.WriteLine("Press ENTER to exit!");
