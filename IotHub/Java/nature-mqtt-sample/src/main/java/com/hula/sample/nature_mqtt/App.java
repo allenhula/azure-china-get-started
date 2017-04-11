@@ -4,11 +4,15 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.SSLSocketFactory;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.codec.binary.Base64;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
@@ -16,8 +20,6 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-
-import com.microsoft.azure.iothub.auth.Signature;
 
 public class App {
 	public static void main(String[] args) throws MqttException, IOException, InterruptedException {
@@ -76,10 +78,39 @@ public class App {
 		String tokenFormat = "SharedAccessSignature sig=%s&se=%s&sr=%s";
 		String scope = URLEncoder.encode(serverUri, StandardCharsets.UTF_8.toString());
 		long expiryTime = System.currentTimeMillis() / 1000l + 600 + 1l;
-
-		Signature signature = new Signature(scope, expiryTime, key);
-		String signatureStr = signature.toString();
+		
+		String signatureStr = generateSignature(scope, expiryTime, key); 
 
 		return String.format(tokenFormat, signatureStr, expiryTime, scope);
+	}
+	
+	private static String generateSignature(String resrouceUri, long expiryTime, String deviceKey) throws UnsupportedEncodingException
+	{
+		byte[] rawSig = String.format("%s\n%s", resrouceUri, expiryTime).getBytes(StandardCharsets.UTF_8);
+		byte[] decodedDeviceKey = Base64.decodeBase64(deviceKey.getBytes());
+		
+		String hmacSha256 = "HmacSHA256";
+		SecretKeySpec secretKey = new SecretKeySpec(decodedDeviceKey, hmacSha256);
+		byte[] encryptedSig = null;
+		try
+		{
+			Mac hMacSha256 = Mac.getInstance(hmacSha256);
+			hMacSha256.init(secretKey);
+			encryptedSig = hMacSha256.doFinal(rawSig);
+		}
+		catch (NoSuchAlgorithmException e)
+		{ 
+			// should never happen, since the algorithm is hard-coded
+		}
+		catch (InvalidKeyException e)
+		{
+			// should never happen, since the algorithm is hard-coded 
+		}
+		
+		byte[] encryptedSigBase64 = Base64.encodeBase64(encryptedSig);
+		String utf8Sig = new String(encryptedSigBase64, StandardCharsets.UTF_8);		
+		String signatureStr = URLEncoder.encode(utf8Sig, StandardCharsets.UTF_8.name());
+		
+		return signatureStr;
 	}
 }
