@@ -27,11 +27,11 @@ namespace SBRestApiDemo
 
             // mooncake
             var queueUri = $"https://{serviceBusNamespace}.servicebus.chinacloudapi.cn/{queueName}";
-
             // send message 1
             Console.WriteLine("Sending message 1...");
             var message1 = new ServiceBusHttpMessage();
             var senderSasToken = createToken(queueUri, senderKeyName, senderKey);
+            
             message1.Body = Encoding.UTF8.GetBytes("This is the first message.");
             message1.SystemProperties.Label = "M1";
             message1.SystemProperties.TimeToLive = TimeSpan.FromSeconds(10);
@@ -145,10 +145,12 @@ namespace SBRestApiDemo
             {
                 if (deleteMessage)
                 {
+                    // receive and delete
                     response = await httpClient.DeleteAsync($"{address}?timeout=60");
                 }
                 else
                 {
+                    // peek lock
                     response = await httpClient.PostAsync($"{address}?timeout=60", new ByteArrayContent(new Byte[0]));
                 }
                 
