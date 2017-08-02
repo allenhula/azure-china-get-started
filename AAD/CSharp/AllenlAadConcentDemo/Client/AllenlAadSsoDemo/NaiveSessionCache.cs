@@ -27,10 +27,7 @@ namespace AllenlAadSsoDemo
         public void Load()
         {
             SessionLock.EnterReadLock();
-            if (HttpContext.Current != null)
-            {
-                Deserialize((byte[])HttpContext.Current.Session[CacheId]);
-            }
+            Deserialize((byte[])HttpRuntime.Cache[CacheId]);
             SessionLock.ExitReadLock();
         }
 
@@ -41,7 +38,7 @@ namespace AllenlAadSsoDemo
             this.HasStateChanged = false;
 
             // Reflect changes in the persistent store
-            HttpContext.Current.Session[CacheId] = this.Serialize();
+            HttpRuntime.Cache[CacheId] = this.Serialize();
             SessionLock.ExitWriteLock();
         }
 
@@ -49,7 +46,7 @@ namespace AllenlAadSsoDemo
         public override void Clear()
         {
             base.Clear();
-            HttpContext.Current.Session.Remove(CacheId);
+            HttpRuntime.Cache.Remove(CacheId);
         }
 
         public override void DeleteItem(TokenCacheItem item)
